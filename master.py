@@ -10,7 +10,7 @@ def main_start_shuaben(goal:int):
     '''开始刷本的主要逻辑函数'''
     cx,cy = getclicker_with_cord("挑战")
     print("请对本次副本队伍进行配置")
-    print("请尽量保持刷本过程中因练度不足或奶量不足")
+    print("请尽量保证刷本过程中因练度不足或奶量不足")
     print("导致的刷本循环中出现失败情况")
     print("(问就是还没开始写出现失败情况的处理方式)")
     print("此时请不要移动游戏窗口或遮挡挑战按钮")
@@ -109,12 +109,21 @@ def CheckPow_v2():
     
     have_hou_bei_kai_tuo_li = check_str("取出等量后备开拓力")
     if have_hou_bei_kai_tuo_li ==True:
-        x,y = getclicker_with_cord("确认")
+        lowjd_getclicker("确认")
         sleep(3)
-        pyautogui.click(x,y)
+        # pyautogui.click(x,y)
+        lowjd_getclicker("确认")
+        
+        sleep(1.5)
+        
+        lowjd_getclicker("点击空白处关闭")
+        
+        sleep(2)
         
         _ctn = getclicker_with_status("再来一次")#此时再尝试点击继续挑战按钮
+        
         sleep(3)
+        
         have_tan_chuang = check_str("开拓力补充")
         if have_tan_chuang ==True:
             return False
@@ -127,7 +136,7 @@ def CheckPow_v2():
 
 print("----------------------------------------------")
 print("半-自动 星穹铁道 重构版")
-print("Re:Half-Auto StarRail Beta")
+print("Re:Half-Auto StarRail Beta 1.1")
 print("Powered by ZiHao with love")
 print("----------------------------------------------")
 

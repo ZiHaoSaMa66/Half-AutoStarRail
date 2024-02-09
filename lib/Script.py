@@ -9,7 +9,7 @@ import sys
 mainpath = os.getcwd().replace("\\", "/")
 screenshot_path = mainpath + '/screenshot.png'
 
-debugmode = False
+debugmode = True
 
 # CnOcr.set_caffe_logging_level("WARN")
 
@@ -62,7 +62,7 @@ class Logger():
         times = get_time_str()
         lognr = f"{times} > [OCR] {log}"
         if debugmode ==True:
-            print(lognr)
+            # print(lognr)
             savelog(lognr)
 
 
@@ -161,7 +161,30 @@ def mutp_get_cord_helper(loop_target,ocr_result):
     return False
         
                 
-    
+def lowjd_getclicker(target:str):
+    '''给定一个需要识别的文字进行识别并点击\n
+    LiteVer使用CNOCR引擎
+    低精度检索 文字'''
+    global game_x,game_y
+    getscreenshot()
+    ocr = CnOcr()
+    ocr_result = ocr.ocr(screenshot_path)
+    logger.ocr_debug(f"{ocr_result}")
+    for result in ocr_result:
+        # if target == result['text']:
+        if target in result['text']:
+            # 获取文字所在位置的坐标
+            position = result['position']
+            # 计算中心点坐标
+            center_x = int((position[0][0] + position[1][0]) / 2)
+            center_y = int((position[0][1] + position[2][1]) / 2)
+            # 使用pyautogui进行点击
+            center_x += game_x
+            center_y += game_y
+            logger.debug(f"{target}点击坐标偏移量计算{center_x},{center_y}")
+            pyautogui.click(center_x, center_y)
+            
+            break
 
 
 def getclicker(target:str):
@@ -182,7 +205,7 @@ def getclicker(target:str):
             # 使用pyautogui进行点击
             center_x += game_x
             center_y += game_y
-            logger.debug(f"点击坐标偏移量计算{center_x},{center_y}")
+            logger.debug(f"{target}点击坐标偏移量计算{center_x},{center_y}")
             pyautogui.click(center_x, center_y)
             
             break
@@ -206,11 +229,11 @@ def getclicker_with_status(target:str):
             # 使用pyautogui进行点击
             center_x += game_x
             center_y += game_y
-            logger.debug(f"点击坐标偏移量计算{center_x},{center_y}")
+            logger.debug(f"{target}点击坐标偏移量计算{center_x},{center_y}")
             pyautogui.click(center_x, center_y)
             return True
             break
-    logger.debug(f"寻找的文字{target}不存在!!")
+    logger.debug(f"{target}寻找的文字{target}不存在!!")
     return False
         
 def getclicker_with_cord(target:str):
@@ -231,10 +254,36 @@ def getclicker_with_cord(target:str):
             # 使用pyautogui进行点击
             center_x += game_x
             center_y += game_y
-            logger.debug(f"点击坐标偏移量计算{center_x},{center_y}")
+            logger.debug(f"{target}点击坐标偏移量计算{center_x},{center_y}")
             pyautogui.click(center_x, center_y)
             return center_x, center_y
             break
+    return None,None
+
+def lowjd_getclicker_with_cord(target:str):
+    '''低精度的识别\n
+    给定一个需要识别的文字进行识别并点击\n
+    最后返回偏移量坐标xy'''
+    global game_x,game_y
+    getscreenshot()
+    ocr = CnOcr()
+    ocr_result = ocr.ocr(screenshot_path)
+    logger.ocr_debug(f"{ocr_result}")
+    for result in ocr_result:
+        if target in result['text']:
+            # 获取文字所在位置的坐标
+            position = result['position']
+            # 计算中心点坐标
+            center_x = int((position[0][0] + position[1][0]) / 2)
+            center_y = int((position[0][1] + position[2][1]) / 2)
+            # 使用pyautogui进行点击
+            center_x += game_x
+            center_y += game_y
+            logger.debug(f"{target}点击坐标偏移量计算{center_x},{center_y}")
+            pyautogui.click(center_x, center_y)
+            return center_x, center_y
+            break
+    return None,None
 
 
 def check_str_with_cord(target:str):
@@ -255,7 +304,7 @@ def check_str_with_cord(target:str):
             # 使用pyautogui进行点击
             center_x += game_x
             center_y += game_y
-            logger.debug(f"坐标偏移量计算{center_x},{center_y}")
+            logger.debug(f"{target}坐标偏移量计算{center_x},{center_y}")
             return True,center_x,center_y
     logger.debug(f"寻找的文字{target}不存在!!")
     return False,None,None
