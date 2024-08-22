@@ -1,8 +1,10 @@
 import pyautogui
 import pygetwindow as gw
+
+from cnocr import CnOcr
+
 import os
 from datetime import datetime
-from cnocr import CnOcr
 import ctypes
 import sys
 
@@ -37,8 +39,7 @@ class Logger():
         times = get_time_str()
         lognr = f"{times} > [DEBUG] {log}"
         savelog(lognr)
-        if debugmode ==True:
-            print(lognr)
+
 
     def warn(self,log:str):
         times = get_time_str()
@@ -61,9 +62,8 @@ class Logger():
     def ocr_debug(self,log:str):
         times = get_time_str()
         lognr = f"{times} > [OCR] {log}"
-        if debugmode ==True:
-            # print(lognr)
-            savelog(lognr)
+
+        savelog(lognr)
 
 
 logger = Logger()
@@ -85,12 +85,34 @@ logpath = mainpath + "/" + logfilename + ".log"
 def savelog(log:str):
     '''保存日志到日志文件中'''
     global logpath
-    fm = open(logpath,"a") 
-    # 模式 'a' 表示以追加（append）的方式打开文件，如果文件不存在则会创建文件。
-    log += "\n"
-    fm.write(log)
+    if debugmode:
+        fm = open(logpath,"a",encoding='utf-8') 
+        # 模式 'a' 表示以追加（append）的方式打开文件，如果文件不存在则会创建文件。
+        log += "\n"
+        fm.write(log)
+        fm.close()
+
+def save_left_LoopCount(loopcount:int):
+    '''保存剩余循环次数'''
+    fm = open('leftLoopCount.txt','w',encoding='utf-8')
+    fm.write(str(loopcount))
     fm.close()
     
+
+def read_left_LoopCount():
+    '''读取剩余循环次数'''
+    try:
+        fm = open('leftLoopCount.txt','r')
+        reads = int(fm.read())
+        fm.close()
+        return reads
+    except FileNotFoundError:
+        logger.warn("未找到剩余循环次数文件")
+        return 0
+    except Exception as e:
+        logger.warn(f"读取剩余循环次数文件失败 {e}")
+        return 0
+
 
 def moveawaymose():
     '''把死人鼠标弄走'''

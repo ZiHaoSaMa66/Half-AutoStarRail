@@ -1,0 +1,10 @@
+1. 安装Cnocr库时 Polygon3 缺少 C++ 环境无法编译
+解决A: 使用 pip install Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl
+解决B: 跟随报错日志中的链接去安装微软C++环境后重新安装此库
+
+2. 运行 master.py 文件时 提示 OSError: [WinError 126] 找不到指定的模块。 
+Error loading "~~\Half-AutoStarRail-main\venv\lib\site-packages\torch\lib\fbgemm.dll" 
+or one of its dependencies.
+
+解决: 将libomp140.x86_64_x86-64.dll 补充至自己的 Windows\System32 目录下 如存在可覆盖
+
